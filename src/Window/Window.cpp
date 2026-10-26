@@ -1,17 +1,18 @@
 #include "Window.h"
 #include "../Logger/Logger.h"
-
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <utility>
+#include "../Event/AppEvent.h"
 
 
 Zero::Window::Window(const WindowProps& props) : m_Props { props }
 {
-    glfwSetErrorCallback(ErrorCallback);
+    glfwSetErrorCallback([](int error, const char* description) {
+        Z_LOG_ERROR("[GLFW Error: {0}] {1}\n", error, description);
+    });
 
-    if (!glfwInit())
-    {
+    if (!glfwInit()) {
         Z_LOG_CRITICAL("Error initializing GLFW");
         return;
     }
@@ -24,8 +25,7 @@ Zero::Window::Window(const WindowProps& props) : m_Props { props }
 
     m_WindowHandle = glfwCreateWindow(props.Size.x, props.Size.y, props.Title.c_str(), nullptr, nullptr);
 
-    if (!m_WindowHandle)
-    {
+    if (!m_WindowHandle) {
         Z_LOG_CRITICAL("Error creating GLFW Window");
         glfwTerminate();
         return;
@@ -33,8 +33,22 @@ Zero::Window::Window(const WindowProps& props) : m_Props { props }
 
     glfwMakeContextCurrent(m_WindowHandle);
 
-    // TODO: Move to renderer
+    // TODO: move to Renderer
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+
+    glfwSetWindowUserPointer(m_WindowHandle, &m_Props);
+
+    glfwSetWindowCloseCallback(m_WindowHandle, [](GLFWwindow* window) {
+        WindowProps& props { GetWindowProps(window) };
+        WindowClosedEvent event {};
+        props.EventCallback(event);
+    });
+
+    glfwSetWindowSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height) {
+        WindowProps& props { GetWindowProps(window) };
+        WindowResizedEvent event { glm::uvec2 { width, height } };
+        props.EventCallback(event);
+    });
 
     Z_LOG("Window created");
 }
@@ -60,13 +74,20 @@ void Zero::Window::Update() const
 }
 
 
-Zero::Scope<Zero::Window> Zero::Window::Create(const WindowProps& props)
+void Zero::Window::Resize(const glm::uvec2& size)
 {
-    return CreateScope<Window>(props);
+    m_Props.Size = size;
+    glViewport(0, 0, size.x, size.y);
 }
 
 
-void Zero::Window::ErrorCallback(int error, const char* description)
+void Zero::Window::SetEventCallback(std::function<void(Event&)> callback)
 {
-    Z_LOG_ERROR("[GLFW Error: {0}] {1}\n", error, description);
+    m_Props.EventCallback = callback;
+}
+
+
+Zero::WindowProps& Zero::Window::GetWindowProps(GLFWwindow* window)
+{
+    return *(WindowProps*)glfwGetWindowUserPointer(window);
 }
