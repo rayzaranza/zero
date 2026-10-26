@@ -4,7 +4,8 @@
 #include <memory>
 #include <string>
 #include <glm/glm.hpp>
-
+#include <functional>
+#include "../Event/Event.h"
 
 struct GLFWwindow;
 
@@ -12,31 +13,31 @@ struct GLFWwindow;
 namespace Zero {
 
 
-struct WindowProps
-{
+struct WindowProps {
     std::string Title { "" };
-    glm::ivec2 Size { 1920, 1080 };
-
-    WindowProps() = default;
-    WindowProps(const std::string& title, const glm::ivec2& size) : Title { title }, Size { size }
-    {}
+    glm::uvec2 Size { 1920u, 1080u };
+    std::function<void(Event&)> EventCallback;
 };
 
 
-class Window
-{
+class Window {
   public:
     Window(const WindowProps& props);
     ~Window();
 
   public:
-    static Scope<Window> Create(const WindowProps& props);
+    static Scope<Window> Create(const WindowProps& props)
+    {
+        return CreateScope<Window>(props);
+    }
 
   public:
     void Update() const;
+    void Resize(const glm::uvec2& size);
+    void SetEventCallback(std::function<void(Event&)> callback);
 
   private:
-    static void ErrorCallback(int error, const char* description);
+    static WindowProps& GetWindowProps(GLFWwindow* window);
 
   private:
     GLFWwindow* m_WindowHandle;

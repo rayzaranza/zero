@@ -11,16 +11,24 @@ find_package(glad CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
 add_executable(zero
-        src/Main.cpp
-        src/Application/Application.cpp
-        src/Application/Application.h
-        src/Window/Window.cpp
-        src/Window/Window.h
-        src/Window/Window.cpp
-        src/Window/Window.h
-        src/Core/Types.h
-        src/Logger/Logger.cpp
-        src/Logger/Logger.h
+    "src/Main.cpp"
+    "src/Core/Base.h"
+    "src/Core/Types.h"
+
+    "src/Application/Application.cpp"
+    "src/Application/Application.h"
+    "src/Window/Window.cpp"
+    "src/Window/Window.h"
+    "src/Logger/Logger.cpp"
+    "src/Logger/Logger.h"
+
+    "src/Event/Event.h"
+    "src/Event/AppEvent.h"
+    "src/Event/KeyEvent.h"
+    "src/Event/MouseEvent.h"
+    "src/Event/EventDispatcher.h"
+
+    "src/Input/KeyCode.h"
 )
 
 target_link_libraries(zero

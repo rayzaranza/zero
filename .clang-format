@@ -30,14 +30,15 @@ AlignConsecutiveShortCaseStatements:
     AcrossComments: true
     AlignCaseColons: false
 
-Cpp11BracedListStyle: "false"
+Cpp11BracedListStyle: Block
 
 BraceWrapping:
-    AfterCaseLabel: true
+    AfterCaseLabel: false
     AfterNamespace: false
-    AfterClass: true
-    AfterStruct: true
+    AfterClass: false
+    AfterStruct: false
     SplitEmptyFunction: false
+    AfterControlStatement: false
 
 SpaceBeforeCpp11BracedList: true
 SpaceAfterTemplateKeyword: true
@@ -45,10 +46,15 @@ SpaceAfterOperatorKeyword: true
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeAssignmentOperators: true
 
-BreakConstructorInitializers: BeforeComma
 PackConstructorInitializers: CurrentLine
 
 BinPackArguments: false
+
+PackParameters:
+    BinPack: OnePerLine
+
+PackArguments:
+    BinPack: OnePerLine
 
 AlignAfterOpenBracket: false
 
@@ -56,3 +62,18 @@ SortIncludes:
     Enabled: false
 
 IndentPPDirectives: BeforeHash
+AllowShortLambdasOnASingleLine: None
+BreakBeforeBinaryOperators: All
+AlignOperands: AlignAfterOperator
+BreakBinaryOperations: RespectPrecedence
+
+BreakConstructorInitializers: BeforeComma
+BreakAfterOpenBracketBracedList: true
+BreakAfterOpenBracketFunction: true
+BreakBeforeCloseBracketBracedList: true
+BreakBeforeCloseBracketFunction: true
+BreakBeforeCloseBracketIf: true
+BreakBeforeCloseBracketLoop: true
+BreakBeforeTernaryOperators: true
+BreakFunctionDeclarationParameters: false
+BreakFunctionDefinitionParameters: false
