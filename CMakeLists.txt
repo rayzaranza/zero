@@ -29,6 +29,9 @@ add_executable(zero
     "src/Event/EventDispatcher.h"
 
     "src/Input/KeyCode.h"
+    
+    "src/Renderer/Renderer.h"
+    "src/Renderer/Renderer.cpp"
 )
 
 target_link_libraries(zero

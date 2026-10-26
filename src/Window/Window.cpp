@@ -1,9 +1,9 @@
 #include "Window.h"
 #include "../Logger/Logger.h"
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #include <utility>
 #include "../Event/AppEvent.h"
+#include "../Renderer/Renderer.h"
 
 
 Zero::Window::Window(const WindowProps& props) : m_Props { props }
@@ -31,10 +31,7 @@ Zero::Window::Window(const WindowProps& props) : m_Props { props }
         return;
     }
 
-    glfwMakeContextCurrent(m_WindowHandle);
-
-    // TODO: move to Renderer
-    gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+    Renderer::Init(m_WindowHandle);
 
     glfwSetWindowUserPointer(m_WindowHandle, &m_Props);
 
@@ -65,9 +62,7 @@ Zero::Window::~Window()
 
 void Zero::Window::Update() const
 {
-    // TODO: move to Renderer
-    glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    Renderer::Clear();
 
     glfwPollEvents();
     glfwSwapBuffers(m_WindowHandle);
@@ -77,7 +72,7 @@ void Zero::Window::Update() const
 void Zero::Window::Resize(const glm::uvec2& size)
 {
     m_Props.Size = size;
-    glViewport(0, 0, size.x, size.y);
+    Renderer::SetViewport({ 0, 0 }, size);
 }
 
 
